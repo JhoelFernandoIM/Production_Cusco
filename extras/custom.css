@@ -1,0 +1,41 @@
+
+#sidebar {
+  background: #ffecec ;
+  background-image: url("iclogo.png");
+  background-repeat: no-repeat;
+  background-position: 50% 80%;
+  background-size: 300px 150px;
+  margin-bottom: 2em;
+}
+
+#postamble {
+  background:#90b3f9f8;
+  border-top:solid 10px #1ec515;
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: 40px 50px;
+}
+
+.title {
+  text-align: center;
+  color: #dbb134;
+}
+
+#author {
+  background-image: url("iclogo.png");
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: 100px 100px;
+}
+
+.subtitle {
+  color: #414df5;
+}
+
+h1, h2, h3, h4, h5, h6, legend {
+  color: #73d5e9;
+}
+
+#content h2 {
+    background-color: #1e79d5;
+}
