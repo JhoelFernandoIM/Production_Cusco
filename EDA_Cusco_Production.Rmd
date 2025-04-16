@@ -1,7 +1,7 @@
 ---
 title: "EDA _ Producción Cusco"
 author: 
-  - name: "Jhoel Fernando Ingalla Mamani"
+  - name: "Proyecto productivo IB"
     avatar: extras/logo/avatar.png
 date: "2025-04-06"
 output:
@@ -26,6 +26,7 @@ library(tidyverse)
 library(ggplot2)
 library(knitr)
 library(corrplot)
+library(descriptr)
 
 # Leer el CSV
 produccion_cusco <- read_csv("produccion_cusco.csv")
@@ -35,9 +36,13 @@ glimpse(produccion_cusco)
 summary(produccion_cusco)
 ```
 
+![Idea](extras/GERAGRI_CUSCO.jpg)
+
 ```{r}
 str(produccion_cusco)
 ```
+# 📚 Medidas de tendencia central y dispersión
+
 
 ```{r}
 skim(produccion_cusco)
@@ -56,8 +61,90 @@ produccion_cusco %>%
 
 # 📚 Distribución de variables
 
-El análisis estadístico constituye una herramienta fundamental para interpretar datos y tomar decisiones informadas en diversos campos. En el área de Producción o Manufactura, permite estudiar patrones relacionados con edad de los operarios, experiencia, productividad, sueldos y desempeño, contribuyendo a una gestión más eficiente de los recursos humanos y materiales.
+Podemos ver como estan distribuidas las variables a través de los conocidos boxplots, estos nos muestran como se encuentran los datos distribuidos considerando los cuartiles 1,2,3 para ver cuan denso es una zona de la caja o en los bigotes.
 
+Para este caso se hizo un ajuste a todos los calculos para poder tener una imagén referencial de los gráficos, puesto que hay algunos datos con valores muy extremos. El ajuste es de un 95% de los primeros valores.
+
+
+
+```{r}
+# Filtrar por percentil 95 (remueve valores extremos)
+produccion_cusco %>%
+  select(superficie_verde) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable) %>%
+  filter(Valor <= quantile(Valor, 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = Variable, y = Valor)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue", outlier.shape = 16, outlier.size = 2) +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Diagramas de Caja (sin outliers más allá del percentil 95)",
+       x = "Variable", y = "Valor")
+```
+
+```{r}
+# Filtrar por percentil 95 (remueve valores extremos)
+produccion_cusco %>%
+  select(cosecha) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable) %>%
+  filter(Valor <= quantile(Valor, 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = Variable, y = Valor)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue", outlier.shape = 16, outlier.size = 2) +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Diagramas de Caja (sin outliers más allá del percentil 95)",
+       x = "Variable", y = "Valor")
+```
+
+```{r}
+# Filtrar por percentil 95 (remueve valores extremos)
+produccion_cusco %>%
+  select(precio_chacra) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable) %>%
+  filter(Valor <= quantile(Valor, 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = Variable, y = Valor)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue", outlier.shape = 16, outlier.size = 2) +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Diagramas de Caja (sin outliers más allá del percentil 95)",
+       x = "Variable", y = "Valor")
+```
+
+```{r}
+# Filtrar por percentil 95 (remueve valores extremos)
+produccion_cusco %>%
+  select(rendimiento) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable) %>%
+  filter(Valor <= quantile(Valor, 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = Variable, y = Valor)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue", outlier.shape = 16, outlier.size = 2) +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Diagramas de Caja (sin outliers más allá del percentil 95)",
+       x = "Variable", y = "Valor")
+```
+```{r}
+# Filtrar por percentil 95 (remueve valores extremos)
+produccion_cusco %>%
+  select(produccion) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable) %>%
+  filter(Valor <= quantile(Valor, 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = Variable, y = Valor)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue", outlier.shape = 16, outlier.size = 2) +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Diagramas de Caja (sin outliers más allá del percentil 95)",
+       x = "Variable", y = "Valor")
+```
 ```{r}
 # Filtrar por percentil 95 (elimina extremos sin perder mucho info)
 produccion_cusco %>%
@@ -65,7 +152,7 @@ produccion_cusco %>%
          produccion, precio_chacra, valor_produccion) %>%
   pivot_longer(cols = everything(), names_to = "Variable", values_to = "Valor") %>%
   group_by(Variable) %>%
-  filter(Valor <= quantile(Valor, 0.90)) %>%  # corte al 95%
+  filter(Valor <= quantile(Valor, 0.95)) %>%  # corte al 90%
   ggplot(aes(x = Valor)) +
   geom_histogram(bins = 50, fill = "steelblue", color = "white") +
   facet_wrap(~ Variable, scales = "free", ncol = 3) +
@@ -74,29 +161,66 @@ produccion_cusco %>%
        x = "Valor", y = "Frecuencia")
 ```
 
-
 ```{r}
-ggplot(produccion_cusco, aes(x = superficie_verde)) +
-  geom_histogram(bins =20, fill = "steelblue", color = "white") +
-  labs(title = "Distribución de Superficie verde ", x = "Superfice_verde", y = "Frecuencia") +
-  theme_minimal()
-```
-
-
-```{r}
-# Histograma por variable
+# Gráficas de densidad sin outliers extremos (percentil 90)
 produccion_cusco %>%
   select(superficie_verde, siembra, cosecha, rendimiento,
          produccion, precio_chacra, valor_produccion) %>%
   pivot_longer(cols = everything(), names_to = "Variable", values_to = "Valor") %>%
-  ggplot(aes(x = Valor)) +
-  geom_histogram(bins = 15, fill = "steelblue", color = "white") +
+  group_by(Variable) %>%
+  filter(Valor <= quantile(Valor, 0.95, na.rm = TRUE)) %>%  # corte al 90%
+  ungroup() %>%
+  ggplot(aes(x = Valor, fill = Variable)) +
+  geom_density(alpha = 0.6, color = NA) +
   facet_wrap(~ Variable, scales = "free", ncol = 3) +
   theme_minimal() +
-  labs(title = "Distribución de variables numéricas",
-       x = "Valor", y = "Frecuencia")
-
+  labs(title = "Gráficas de Densidad sin Outliers (percentil 95)",
+       x = "Valor", y = "Densidad")
 ```
+
+# 📚 Correlación
+
+```{r}
+library(GGally)
+library(dplyr)
+
+# Matriz de correlación eliminando outliers extremos (percentil 90)
+produccion_cusco %>%
+  select(superficie_verde, siembra, cosecha, rendimiento,
+         produccion, precio_chacra, valor_produccion) %>%
+  mutate(across(everything(), ~ ifelse(. <= quantile(., 0.90, na.rm = TRUE), ., NA))) %>%
+  drop_na() %>%
+  ggpairs(title = "Matriz de correlación sin outliers extremos (percentil 90)")
+```
+
+```{r}
+produccion_cusco %>%
+  select(superficie_verde, siembra, cosecha, rendimiento,
+         produccion, precio_chacra, valor_produccion) %>%
+  ggpairs(
+    upper = list(continuous = wrap("cor", size = 4)),
+    lower = list(continuous = wrap("points", alpha = 0.6, color = "steelblue")),
+    diag = list(continuous = wrap("densityDiag", alpha = 0.5, fill = "lightblue"))
+  ) +
+  ggtitle("Matriz de correlación con dispersión y densidad (colores tipo densidad)")
+```
+
+```{r}
+# Matriz de correlación sin outliers extremos (percentil 90) y con colores
+produccion_cusco %>%
+  select(superficie_verde, siembra, cosecha, rendimiento,
+         produccion, precio_chacra, valor_produccion) %>%
+  # Filtrar por percentil 90 para cada columna
+  mutate(across(everything(), ~ ifelse(. <= quantile(., 0.95, na.rm = TRUE), ., NA))) %>%
+  drop_na() %>%
+  ggpairs(
+    upper = list(continuous = wrap("cor", size = 4)),  # coef. de correlación
+    lower = list(continuous = wrap("points", alpha = 0.6, color = "steelblue")),  # dispersión
+    diag = list(continuous = wrap("densityDiag", alpha = 0.5, fill = "lightblue"))  # densidad
+  ) +
+  ggtitle("Matriz de correlación sin outliers (percentil 95)")
+```
+
 
 
 ```{r}
@@ -115,40 +239,17 @@ corrplot(correlacion, method = "color", type = "upper", tl.col = "black")
 
 
 
-![Idea](extras/idea.jpg)
+![Idea](extras/GERAGRI_CUSCO.jpg)
 
 
-
-# 🎯 Objetivos
-
-## Objetivo General
-
-Aplicar herramientas de estadística descriptiva e inferencial para analizar los datos del personal del área de producción de la empresa "Soluciones Globales S.A.C."
-
-## Objetivos Específicos
-
-- Describir las principales variables del personal de producción.
-- Calcular medidas de tendencia central y dispersión.
-- Aplicar pruebas de hipótesis para proporciones y medias.
-- Estimar y analizar la regresión lineal simple.
-- Interpretar gráficamente los resultados obtenidos.
 
 
 
 # 📝 Conclusiones
 
-El análisis descriptivo mostró que la mayoría de los empleados están en el área de Producción Industrial y en el rango de edad de 25 a 40 años, lo que podría estar relacionado con una etapa de alta productividad.
+Es necesario considerar cuál será nuestra medida de tendencia central. En este caso en esfecífico, nos pudimos dar cuenta de que los valores extremos en la distribución de datos afectan significativamente a la media, por lo que la mediana sería una medida más representativa de nuestros datos.
+
+Por tal razón, al momento de visualizar se observó gráficas inadecuadas, teniendo que recurrir a un ajuste de los datos al 95% de los primeros datos, para tener una mejor visualización.
 
 
 
-# Referencias
-
-Anderson, D. R., Sweeney, D. J., Williams, T. A., Camm, J. D., & Cochran, J. J. (2020). *Estadística para los negocios y la economía* (14.a ed.). Cengage Learning.
-
-Montgomery, D. C. (2019). *Introduction to Statistical Quality Control* (8th ed.). Wiley.
-
-Triola, M. F. (2022). *Estadística*. Pearson Educación.
-
-Draper, N. R., & Smith, H. (1998). *Applied Regression Analysis* (3rd ed.). Wiley.
-
-Levine, D. M., Stephan, D. F., Szabat, K. A., & Berenson, M. L. (2017). *Estadística para administración* (8.a ed.). Pearson Educación.
